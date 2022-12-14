@@ -1,0 +1,15 @@
+<%- include('partials/header', {title:"Add a Student"}) -%>
+
+<h1>Add a student to the gradebook</h1>
+
+<form action="/studentCreate" method="POST">
+  <label for="name">Student Name:</label>
+  <input type="text" id="name" name="StudentName" value=""><br>
+  <label for="photo">Link to Student Photo:</label>
+  <input type="text" id="photo" name="StudentPhoto" value=""><br>
+  <br><br>
+  <input type="submit" value="Submit">
+
+</form>
+
+<%- include('partials/footer') -%>
