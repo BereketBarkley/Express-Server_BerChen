@@ -1,0 +1,20 @@
+<%- include('partials/header', {title:"StudentProfile"}) -%>
+
+<h2>Student Profile</h2>
+
+<form action="/opponentCreate" method="POST">
+  <label for="name">Student Name:</label>
+
+  <label for="name">Assessment 1:</label>
+  <input type="text" id="Assessment 1" name="points" value=""><br>
+  <label for="name">Assessment 2:</label>
+  <input type="text" id="Assessment 2" name="points" value=""><br>
+  <label for="name">Assessment 3:</label>
+  <input type="text" id="Assessment 3" name="points" value=""><br>
+
+  <br><br>
+  <input type="submit" value="Add new grade!">
+
+</form>
+
+<%- include('partials/footer') -%>

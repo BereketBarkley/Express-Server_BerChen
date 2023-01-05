@@ -1,0 +1,17 @@
+<%- include('partials/header', {title:"classScores"}) -%>
+
+<h2>Submit Grade!</h2>
+
+<form action="/opponentCreate" method="POST">
+  <label for="name">Student Name:</label>
+  <input type="text" id="studentName" name="name" value=""><br>
+  <label for="name">Final:</label>
+  <input type="text" id="final" name="points" value=""><br>
+
+  <br><br>
+  <input type="submit" value="Add new grade!">
+
+</form>
+
+<%- include('partials/footer') -%>
+//float css - look up to figure out how to use the table
