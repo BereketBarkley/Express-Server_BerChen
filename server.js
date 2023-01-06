@@ -82,11 +82,9 @@ app.get('/', function(request, response) {
   response.render("index");
 });
 
-app.get('/gradeSubmitTeacher', function(request, response) {
-    response.status(200);
-    response.setHeader('Content-Type', 'text/html')
-    response.render("gradeSubmitTeacher");
-});
+
+
+
 
 app.get('/gradeSubmitStudent', function(request, response) {
     response.status(200);
@@ -94,11 +92,7 @@ app.get('/gradeSubmitStudent', function(request, response) {
     response.render("gradeSubmitStudent");
 });
 
-app.get('/studentCreate', function(request, response) {
-    response.status(200);
-    response.setHeader('Content-Type', 'text/html')
-    response.render("studentCreate");
-});
+
 
 app.get('/student/:studentName', function(request, response) {
   response.status(200);
@@ -140,84 +134,77 @@ app.get('/results', function(request, response) {
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
     response.render("results");
-    /*
-    let opponents = JSON.parse(fs.readFileSync('data/opponents.json'));
+});
 
-    //accessing URL query string information from the request object
-    let opponent = request.query.opponent;
-    let playerThrow = request.query.throw;
+app.get('/gradeSubmitTeacher', function(request, response) {
+    response.status(200);
+    response.setHeader('Content-Type', 'text/html')
+    response.render("gradeSubmitTeacher");
+});
 
-    if(opponents[opponent]){
-      let opponentThrowChoices=["Paper", "Rock", "Scissors"];
-      let results={};
+app.post('/gradeSubmitTeacher', function(request,response){
 
-      results["playerThrow"]=playerThrow;
-      results["opponentName"]=opponent;
-      results["opponentPhoto"]=opponents[opponent].photo;
-      results["opponentThrow"] = opponentThrowChoices[Math.floor(Math.random() * 3)];
+      let studentName = request.body.studentName;
+      let assessment = request.body.assessment;
+      let pointsW = request.body.pointsW;
+      let pointsG = request.body.pointsG;
 
-      if(results["playerThrow"]===results["opponentThrow"]){
-        results["outcome"] = "tie";
-      }else if(results["playerThrow"]==="Paper"){
-        if(results["opponentThrow"]=="Scissors") results["outcome"] = "lose";
-        else results["outcome"] = "win";
-      }else if(results["playerThrow"]==="Scissors"){
-        if(results["opponentThrow"]=="Rock") results["outcome"] = "lose";
-        else results["outcome"] = "win";
-      }else{
-        if(results["opponentThrow"]=="Paper") results["outcome"] = "lose";
-        else results["outcome"] = "win";
+      if(studentName && assessment && pointsW && pointsG){
+        let students = JSON.parse(fs.readFileSync('data/students.json'));
+        students[studentName][assessment] = pointsG/pointsW;
+        students[studentName][totalpointsgained] += pointsG;
+        students[studentName][totalpointsoffered] += pointsW;
+        fs.writeFileSync('data/students.json', JSON.stringify(students));
+
+        response.status(200);
+        response.setHeader('Content-Type', 'text/html')
+        response.redirect("/studentCreate");
       }
+      else{
+        response.status(400);
+        response.setHeader('Content-Type', 'text/html')
+        response.render("error", {
+          "errorCode":"400"
+        });
+      }
+});
 
-      if(results["outcome"]=="lose") opponents[opponent]["win"]++;
-      else if(results["outcome"]=="win") opponents[opponent]["lose"]++;
-      else opponents[opponent]["tie"]++;
+// STUDENT CREATE --------------------------------------
 
-      //update opponents.json to permanently remember results
-      fs.writeFileSync('data/opponents.json', JSON.stringify(opponents));
-
-      response.status(200);
-      response.setHeader('Content-Type', 'text/html')
-      response.render("results", {
-        data: results
-      });
-    }else{
-      response.status(404);
-      response.setHeader('Content-Type', 'text/html')
-      response.render("error", {
-        "errorCode":"404"
-      });
-    }
-    */
+app.get('/studentCreate', function(request, response) {
+    response.status(200);
+    response.setHeader('Content-Type', 'text/html')
+    response.render("studentCreate");
 });
 
 app.post('/studentCreate', function(request, response) {
-  /*
-    let opponentName = request.body.opponentName;
-    let opponentPhoto = request.body.opponentPhoto;
-    if(opponentName&&opponentPhoto){
-      let opponents = JSON.parse(fs.readFileSync('data/opponents.json'));
-      let newOpponent={
-        "name": opponentName,
-        "photo": opponentPhoto,
-        "win":0,
-        "lose": 0,
-        "tie": 0,
-      }
-      opponents[opponentName] = newOpponent;
-      fs.writeFileSync('data/opponents.json', JSON.stringify(opponents));
 
-      response.status(200);
-      response.setHeader('Content-Type', 'text/html')
-      response.redirect("/opponent/"+opponentName);
-    }else{
-      response.status(400);
-      response.setHeader('Content-Type', 'text/html')
-      response.render("error", {
-        "errorCode":"400"
-      });
+  let studentName = request.body.studentName;
+  let studentPhoto = request.body.studentPhoto;
+
+  if(studentName&&studentPhoto){
+    let students = JSON.parse(fs.readFileSync('data/students.json'));
+    let newStudent={
+      "photoLink": studentPhoto,
+      "cumulativeGrade": 100,
+      "totalpointsgained":0,
+      "totalpointsoffered": 0,
     }
-    */
+    students[studentName] = newStudent;
+    fs.writeFileSync('data/students.json', JSON.stringify(students));
+
+    response.status(200);
+    response.setHeader('Content-Type', 'text/html')
+    response.redirect("/gradeSubmitStudent");
+  }else{
+    response.status(400);
+    response.setHeader('Content-Type', 'text/html')
+    response.render("error", {
+      "errorCode":"400"
+    });
+  }
+
+
 });
 
 
