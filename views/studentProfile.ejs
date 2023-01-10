@@ -1,20 +1,33 @@
+<!doctype html>
 <%- include('partials/header', {title:"StudentProfile"}) -%>
 
 <h2>Student Profile</h2>
 
-<form action="/opponentCreate" method="POST">
-  <label for="name">Student Name:</label>
 
-  <label for="name">Assessment 1:</label>
-  <input type="text" id="Assessment 1" name="points" value=""><br>
-  <label for="name">Assessment 2:</label>
-  <input type="text" id="Assessment 2" name="points" value=""><br>
-  <label for="name">Assessment 3:</label>
-  <input type="text" id="Assessment 3" name="points" value=""><br>
+  <h2>Name: <%= studentName %> </h2>
+  <h2>Cumulative Grade: <%=studentStats["cumulativeGrade"]%></h2>
+  <h3>Total Points Earned: <%=studentStats["totalpointsgained"]%></h3>
+  <h3>Total Points Possible: <%=studentStats["totalpointsoffered"]%></h3>
 
-  <br><br>
-  <input type="submit" value="Add new grade!">
+  <table>
+    <tr>
+      <th>Assignment Name</th>
+      <th>Grade</th>
+    </tr>
+    <%
+      for(tests in studentStats){
+        if(tests != "cumulativeGrade" && tests != "photoLink" && tests != "totalpointsgained" && tests != "totalpointsoffered"){
+    %>
+    <tr>
+      <td><%=tests%></td>
+      <td><%=studentStats[tests]%></td>
+    </tr>
+    <%
+        }
+      }
+      %>
 
-</form>
+
 
 <%- include('partials/footer') -%>
+<html>

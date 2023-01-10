@@ -83,51 +83,38 @@ app.get('/', function(request, response) {
 });
 
 
-
-
-
-app.get('/gradeSubmitStudent', function(request, response) {
+app.get('/studentProfile', function(request, response) {
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
-    response.render("gradeSubmitStudent");
-});
 
 
+    let studentInfo = JSON.parse(fs.readFileSync('data/students.json', 'utf8'));
+    let studentName = request.query.studentName;
 
-app.get('/student/:studentName', function(request, response) {
-  response.status(200);
-  response.setHeader('Content-Type', 'text/html')
-  response.render("studentProfile");
-  /*asds
-  let opponents = JSON.parse(fs.readFileSync('data/opponents.json'));
+    if(studentInfo[studentName]){
+      response.status(200);
+      response.setHeader('Content-Type', 'text/html')
+      response.render("studentProfile",{
+        studentStats: studentInfo[studentName],
+        studentName: studentName,
+      });
+    }
 
-  // using dynamic routes to specify resource request information
-  let opponentName = request.params.opponentName;
-
-  if(opponents[opponentName]){
-    opponents[opponentName].win_percent = (opponents[opponentName].win/parseFloat(opponents[opponentName].win+opponents[opponentName].lose+opponents[opponentName].tie) * 100).toFixed(2);
-    if(opponents[opponentName].win_percent=="NaN") opponents[opponentName].win_percent=0;
-
-    response.status(200);
-    response.setHeader('Content-Type', 'text/html')
-    response.render("opponentDetails",{
-      opponent: opponents[opponentName]
-    });
-
-  }else{
-    response.status(404);
-    response.setHeader('Content-Type', 'text/html')
-    response.render("error", {
-      "errorCode":"404"
-    });
-  }
-  */
+    else{
+      response.status(404);
+      response.setHeader('Content-Type', 'text/html')
+      response.render("error", {
+        "errorCode":"404"
+      });
+    }
 });
 
 app.get('/classScores', function(request, response) {
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
-    response.render("classScores");
+
+    let studentInfo = JSON.parse(fs.readFileSync('data/students.json', 'utf8'));
+    response.render("classScores",{ stats: studentInfo});
 });
 
 app.get('/results', function(request, response) {
@@ -136,11 +123,51 @@ app.get('/results', function(request, response) {
     response.render("results");
 });
 
+// STUDENT SUBMIT GRADE -----------------------------------
+
+app.get('/gradeSubmitStudent', function(request, response) {
+    response.status(200);
+    response.setHeader('Content-Type', 'text/html')
+    response.render("gradeSubmitStudent");
+});
+
+app.post('/gradeSubmitStudent', function(request,response){
+
+      let name = request.body.name;
+      let assessment = request.body.assessment;
+      let pointsW = request.body.pointsW;
+      let pointsG = request.body.pointsG;
+
+      if(name && assessment && pointsW && pointsG){
+        let students = JSON.parse(fs.readFileSync('data/students.json'));
+
+        students[name][assessment] = Number(Math.round(100*pointsG/pointsW)/100);
+        students[name]["totalpointsgained"] += Number(pointsG);
+        students[name]["totalpointsoffered"] += Number(pointsW);
+        students[name]["cumulativeGrade"] = Number(Math.round(100 * students[name]["totalpointsgained"] / students[name]["totalpointsoffered"])/100);
+        fs.writeFileSync('data/students.json', JSON.stringify(students));
+
+        response.status(200);
+        response.setHeader('Content-Type', 'text/html')
+        response.redirect("/studentCreate");
+      }
+      else{
+        response.status(400);
+        response.setHeader('Content-Type', 'text/html')
+        response.render("error", {
+          "errorCode":"400"
+        });
+      }
+});
+
+// TEACHER SUBMIT GRADE -----------------------------------
+
 app.get('/gradeSubmitTeacher', function(request, response) {
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
     response.render("gradeSubmitTeacher");
 });
+
 
 app.post('/gradeSubmitTeacher', function(request,response){
 
@@ -151,9 +178,11 @@ app.post('/gradeSubmitTeacher', function(request,response){
 
       if(studentName && assessment && pointsW && pointsG){
         let students = JSON.parse(fs.readFileSync('data/students.json'));
-        students[studentName][assessment] = pointsG/pointsW;
-        students[studentName][totalpointsgained] += pointsG;
-        students[studentName][totalpointsoffered] += pointsW;
+
+        students[studentName][assessment] = Number(Math.round(100* pointsG/pointsW)/100);
+        students[studentName]["totalpointsgained"] += Number(pointsG);
+        students[studentName]["totalpointsoffered"] += Number(pointsW);
+        students[studentName]["cumulativeGrade"] = Number(Math.round(100 * students[studentName]["totalpointsgained"] / students[studentName]["totalpointsoffered"])/100);
         fs.writeFileSync('data/students.json', JSON.stringify(students));
 
         response.status(200);
@@ -176,6 +205,8 @@ app.get('/studentCreate', function(request, response) {
     response.setHeader('Content-Type', 'text/html')
     response.render("studentCreate");
 });
+
+
 
 app.post('/studentCreate', function(request, response) {
 

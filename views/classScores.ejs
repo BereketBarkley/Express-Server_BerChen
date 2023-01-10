@@ -1,16 +1,38 @@
+<!doctype html>
+
+<head>
+
+</head>
+<body>
+
 <%- include('partials/header', {title:"classScores"}) -%>
 
-<h2>Submit Grade!</h2>
+<form action="/studentProfile" method="GET">
+<table>
+  <tr>
+    <th>Student Name</th>
+    <th>Cumulative Grade</th>
+    <th>Class Rank</th>
+  </tr>
+  <%
 
-<form action="/opponentCreate" method="POST">
-  <label for="name">Student Name:</label>
-  <input type="text" id="studentName" name="name" value=""><br>
-  <label for="name">Final:</label>
-  <input type="text" id="final" name="points" value=""><br>
+  for(student in stats){
 
-  <br><br>
-  <input type="submit" value="Add new grade!">
+    %>
 
+  <tr>
+    <td><input type="submit" name= "studentName" value=<%= student %> ></input></td>
+    <td><%= stats[student].cumulativeGrade %></td>
+    <td>n/a for now</td>
+
+
+  </tr>
+
+  <%}%>
+</table>
 </form>
 
+
 <%- include('partials/footer') -%>
+</body>
+<html>
