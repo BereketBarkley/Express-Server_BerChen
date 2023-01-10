@@ -1,0 +1,18 @@
+<%- include('partials/header', {title:"Add a Student"}) -%>
+
+<h1>Add a student to a class</h1>
+<h3>Warning: only add students to classes that are already added to the gradebook</h3>
+
+<form action="/addStudentToClass" method="POST">
+
+  <label for="name">Student Name:</label>
+  <input type="text" id="studentName" name="studentName" value=""><br>
+  <label for="photo">Class Name</label>
+  <input type="text" id="className" name="className" value=""><br>
+  <br><br>
+  <input type="submit" value="Submit">
+
+</form>
+
+
+<%- include('partials/footer') -%>

@@ -240,6 +240,40 @@ app.post('/studentCreate', function(request, response) {
 
 
 
+app.get('/addStudentToClass', function(request, response) {
+    response.status(200);
+    response.setHeader('Content-Type', 'text/html')
+    response.render("addStudentToClass");
+});
+
+
+
+app.post('/addStudentToClass', function(request, response) {
+
+  let studentName = request.body.studentName;
+  let className = request.body.className;
+
+  if(studentName&&className){
+    let classes = JSON.parse(fs.readFileSync('data/classes.json'));
+
+    classes[className]["roster"].append(studentName);
+    fs.writeFileSync('data/classes.json', JSON.stringify(classes));
+
+    response.status(200);
+    response.setHeader('Content-Type', 'text/html')
+    response.redirect("/classScores");
+  }else{
+    response.status(400);
+    response.setHeader('Content-Type', 'text/html')
+    response.render("error", {
+      "errorCode":"400"
+    });
+  }
+
+
+});
+
+
 app.get('/classCreate', function(request, response) {
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
