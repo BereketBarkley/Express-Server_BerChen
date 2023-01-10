@@ -239,6 +239,50 @@ app.post('/studentCreate', function(request, response) {
 });
 
 
+
+app.get('/classCreate', function(request, response) {
+    response.status(200);
+    response.setHeader('Content-Type', 'text/html')
+    response.render("classCreate");
+});
+
+
+
+app.post('/classCreate', function(request, response) {
+
+  let className = request.body.className;
+  let level = request.body.level;
+  let grade = request.body.grade;
+  let subject = request.body.subject;
+  let student = request.body.student;
+
+  if(className&&level&&grade&&subject&&student){
+    let classes = JSON.parse(fs.readFileSync('data/classes.json'));
+
+    let newClass={
+      "level": level,
+      "grade": grade,
+      "subject":subject,
+      "roster": [student],
+    }
+
+    classes[className] = newClass;
+    fs.writeFileSync('data/classes.json', JSON.stringify(classes));
+
+    response.status(200);
+    response.setHeader('Content-Type', 'text/html')
+    response.redirect("/gradeSubmitStudent");
+  }else{
+    response.status(400);
+    response.setHeader('Content-Type', 'text/html')
+    response.render("error", {
+      "errorCode":"400"
+    });
+  }
+
+
+});
+
 //-----------------------------DEMO-----------------------------------------
 
 app.post('/opponentCreate', function(request, response) {

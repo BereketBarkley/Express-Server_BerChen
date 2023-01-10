@@ -1,0 +1,21 @@
+<%- include('partials/header', {title:"Add a Class"}) -%>
+
+<h1>Add a class to the gradebook</h1>
+
+<form action="/classCreate" method="POST">
+  <label for="name">Class Name:</label>
+  <input type="text" id="className" name="className" value=""><br>
+  <label for="photo">Class Level:</label>
+  <input type="text" id="level" name="level" value=""><br>
+  <label for="photo">Grade Level</label>
+  <input type="text" id="grade" name="grade" value=""><br>
+  <label for="photo">Department:</label>
+  <input type="text" id="subject" name="subject" value=""><br>
+  <label for="photo">Add at one student who is already added to gradebook to this class:</label>
+  <input type="text" id="student" name="student" value=""><br>
+  <br><br>
+  <input type="submit" value="Submit">
+
+</form>
+
+<%- include('partials/footer') -%>
