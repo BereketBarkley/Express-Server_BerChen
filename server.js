@@ -149,7 +149,7 @@ app.post('/gradeSubmitStudent', function(request,response){
 
         response.status(200);
         response.setHeader('Content-Type', 'text/html')
-        response.redirect("/studentCreate");
+        response.redirect("/classScores");
       }
       else{
         response.status(400);
@@ -187,7 +187,7 @@ app.post('/gradeSubmitTeacher', function(request,response){
 
         response.status(200);
         response.setHeader('Content-Type', 'text/html')
-        response.redirect("/studentCreate");
+        response.redirect("/classScores");
       }
       else{
         response.status(400);
