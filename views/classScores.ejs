@@ -8,27 +8,29 @@
 <%- include('partials/header', {title:"classScores"}) -%>
 
 <form action="/studentProfile" method="GET">
-<table>
+<%
+  for(classes in classStats){
+
+  %>
+  <h2><%=classes%></h2>
+  <table>
+    <%
+    for(students in stats){
+      for(let i = 0; i < classStats[classes]["roster"].length; i++){
+        if(students == classStats[classes]["roster"][i]){
+      %>
+  </table>
   <tr>
-    <th>Student Name</th>
-    <th>Cumulative Grade</th>
-    <th>Class Rank</th>
+    <td><input type = "submit" name = "studentName" value = <%=students%>></input></td>
+    <td><%=stats[students].cumulativeGrade%></td>
   </tr>
-  <%
+  <br></br>
 
-  for(student in stats){
-
+  <%    }
+      }
+    }
+  }
     %>
-
-  <tr>
-    <td><input type="submit" name= "studentName" value=<%= student %> ></input></td>
-    <td><%= stats[student].cumulativeGrade %></td>
-    <td>n/a for now</td>
-
-
-  </tr>
-
-  <%}%>
 </table>
 </form>
 
