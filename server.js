@@ -114,7 +114,8 @@ app.get('/classScores', function(request, response) {
     response.setHeader('Content-Type', 'text/html')
 
     let studentInfo = JSON.parse(fs.readFileSync('data/students.json', 'utf8'));
-    response.render("classScores",{ stats: studentInfo});
+    let classInfo = JSON.parse(fs.readFileSync('data/classes.json', 'utf8'));
+    response.render("classScores",{ stats: studentInfo, classStats: classInfo});
 });
 
 app.get('/results', function(request, response) {
@@ -255,8 +256,9 @@ app.post('/addStudentToClass', function(request, response) {
 
   if(studentName&&className){
     let classes = JSON.parse(fs.readFileSync('data/classes.json'));
+    console.log(className, classes[className]["roster"]);
 
-    classes[className]["roster"].append(studentName);
+    classes[className]["roster"].push(studentName);
     fs.writeFileSync('data/classes.json', JSON.stringify(classes));
 
     response.status(200);
