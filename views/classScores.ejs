@@ -13,25 +13,37 @@
 
   %>
   <h2><%=classes%></h2>
+  <p>Level(AP, Honors, College Prep, Regular, etc.): <%=classStats[classes]["level"]%></p>
+  <p>Department: <%=classStats[classes]["subject"]%></p>
+  <p>Grade: <%=classStats[classes]["grade"]%></p>
   <table>
+    <tr>
+      <th>Name</th>
+      <th>Culumative Grade</th>
+    </tr>
+
     <%
     for(students in stats){
       for(let i = 0; i < classStats[classes]["roster"].length; i++){
         if(students == classStats[classes]["roster"][i]){
       %>
-  </table>
+
+
   <tr>
     <td><input type = "submit" name = "studentName" value = <%=students%>></input></td>
     <td><%=stats[students].cumulativeGrade%></td>
   </tr>
-  <br></br>
+
 
   <%    }
       }
     }
+    %>
+  </table>
+  <br></br>
+<%
   }
     %>
-</table>
 </form>
 
 

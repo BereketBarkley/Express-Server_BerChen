@@ -59,6 +59,16 @@ app.get('/classScores', function(request, response) {
     response.render("classScores",{ stats: studentInfo, classStats: classInfo});
 });
 
+app.get('/assessmentScores', function(request, response) {
+    response.status(200);
+    response.setHeader('Content-Type', 'text/html')
+
+    let studentInfo = JSON.parse(fs.readFileSync('data/students.json', 'utf8'));
+    let assessmentInfo = JSON.parse(fs.readFileSync('data/assessments.json', 'utf8'));
+    let classInfo = JSON.parse(fs.readFileSync('data/classes.json', 'utf8'));
+    response.render("assessmentScores",{ studentStats: studentInfo, classStats: classInfo, assessmentStats: assessmentInfo});
+});
+
 app.get('/results', function(request, response) {
     response.status(200);
     response.setHeader('Content-Type', 'text/html')
@@ -79,9 +89,36 @@ app.post('/gradeSubmitStudent', function(request,response){
       let assessment = request.body.assessment;
       let pointsW = request.body.pointsW;
       let pointsG = request.body.pointsG;
+      let className = request.body.class;
 
-      if(name && assessment && pointsW && pointsG){
+      if(name && assessment && pointsW && pointsG && className){
         let students = JSON.parse(fs.readFileSync('data/students.json'));
+        let assessments = JSON.parse(fs.readFileSync('data/assessments.json'));
+        let classes = JSON.parse(fs.readFileSync('data/classes.json'));
+
+        let switcha = false;
+        for(eachTest in assessments){
+          if (eachTest == assessment){
+           switcha = true;
+          }
+        }
+        if(switcha == false){
+          assessments[assessment] = {"className":"","grade":"","level":"","rosterGrades":{}};
+        }
+
+        assessments[assessment]["className"] = className;
+        for(eachClass in classes){
+          if(eachClass == className){
+            assessments[assessment]["grade"] = classes[eachClass]["grade"];
+            assessments[assessment]["level"] = classes[eachClass]["level"];
+          }
+          else{
+            assessments[assessment]["grade"] = classes[eachClass]["n/a"];
+            assessments[assessment]["level"] = classes[eachClass]["n/a"];
+          }
+        }
+        assessments[assessment]["rosterGrades"][name] = Number(Math.round(100*pointsG/pointsW)/100);
+        fs.writeFileSync('data/assessments.json', JSON.stringify(assessments));
 
         students[name][assessment] = Number(Math.round(100*pointsG/pointsW)/100);
         students[name]["totalpointsgained"] += Number(pointsG);
@@ -118,8 +155,36 @@ app.post('/gradeSubmitTeacher', function(request,response){
       let pointsW = request.body.pointsW;
       let pointsG = request.body.pointsG;
 
+
       if(studentName && assessment && pointsW && pointsG){
         let students = JSON.parse(fs.readFileSync('data/students.json'));
+
+        let assessments = JSON.parse(fs.readFileSync('data/assessments.json'));
+        let classes = JSON.parse(fs.readFileSync('data/classes.json'));
+
+        let switcha = false;
+        for(eachTest in assessments){
+          if (eachTest == assessment){
+           switcha = true;
+          }
+        }
+        if(switcha == false){
+          assessments[assessment] = {"className":"","grade":"","level":"","rosterGrades":{}};
+        }
+
+        assessments[assessment]["className"] = className;
+        for(eachClass in classes){
+          if(eachClass == className){
+            assessments[assessment]["grade"] = classes[eachClass]["grade"];
+            assessments[assessment]["level"] = classes[eachClass]["level"];
+          }
+          else{
+            assessments[assessment]["grade"] = classes[eachClass]["n/a"];
+            assessments[assessment]["level"] = classes[eachClass]["n/a"];
+          }
+        }
+        assessments[assessment]["rosterGrades"][name] = Number(Math.round(100*pointsG/pointsW)/100);
+        fs.writeFileSync('data/assessments.json', JSON.stringify(assessments));
 
         students[studentName][assessment] = Number(Math.round(100* pointsG/pointsW)/100);
         students[studentName]["totalpointsgained"] += Number(pointsG);

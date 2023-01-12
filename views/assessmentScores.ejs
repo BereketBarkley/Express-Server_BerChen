@@ -1,0 +1,54 @@
+<!doctype html>
+
+<head>
+
+</head>
+<body>
+
+<%- include('partials/header', {title:"assignmentScores"}) -%>
+
+<form action="/studentProfile" method="GET">
+<%
+  for(assessment in assessmentStats){
+
+  %>
+  <h2><%=assessment%></h2>
+  <p>Class: <%=assessmentStats[assessment]["className"]%></p>
+  <p>Level(AP, Honors, College Prep, Regular, etc.): <%=assessmentStats[assessment]["level"]%></p>
+  <p>Grade: <%=assessmentStats[assessment]["grade"]%></p>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Assignment Score</th>
+    </tr>
+
+    <%
+    for(classes in classStats){
+    for(student in assessmentStats[assessment]["rosterGrades"]){
+      for(let i = 0; i < classStats[classes]["roster"].length; i++){
+        if(student == classStats[classes]["roster"][i]){
+      %>
+
+
+  <tr>
+    <td><input type = "submit" name = "studentName" value = <%=student%>></input></td>
+    <td><%=assessmentStats[assessment]["rosterGrades"][student]%></td>
+  </tr>
+
+
+  <%    }
+      }
+    }
+  }
+    %>
+  </table>
+  <br></br>
+<%
+  }
+    %>
+</form>
+
+
+<%- include('partials/footer') -%>
+</body>
+<html>
