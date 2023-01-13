@@ -154,6 +154,7 @@ app.post('/gradeSubmitTeacher', function(request,response){
       let assessment = request.body.assessment;
       let pointsW = request.body.pointsW;
       let pointsG = request.body.pointsG;
+      let className = request.body.class;
 
 
       if(studentName && assessment && pointsW && pointsG){
@@ -183,7 +184,7 @@ app.post('/gradeSubmitTeacher', function(request,response){
             assessments[assessment]["level"] = classes[eachClass]["n/a"];
           }
         }
-        assessments[assessment]["rosterGrades"][name] = Number(Math.round(100*pointsG/pointsW)/100);
+        assessments[assessment]["rosterGrades"][studentName] = Number(Math.round(100*pointsG/pointsW)/100);
         fs.writeFileSync('data/assessments.json', JSON.stringify(assessments));
 
         students[studentName][assessment] = Number(Math.round(100* pointsG/pointsW)/100);
